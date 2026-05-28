@@ -1,0 +1,28 @@
+# Render Blueprint — deploys Four Corners as a web service.
+# In Render: New + → "Blueprint" → connect this repo → Render reads this file.
+# It will prompt you for the three secrets marked sync:false.
+services:
+  - type: web
+    name: four-corners
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: TZ
+        value: America/New_York
+      - key: COACH_MODEL
+        value: claude-sonnet-4-6
+      - key: VAPID_SUBJECT
+        value: mailto:bobby@rennerfinancialgroup.com
+      # Auto-generated for you — find it later under the service's Environment tab.
+      - key: APP_TOKEN
+        generateValue: true
+      # You paste these in when prompted (see DEPLOY.md).
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false

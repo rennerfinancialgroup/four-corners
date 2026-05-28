@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#14263d" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <title>Four Corners</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;700&family=Sometype+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="grain"></div>
+
+  <header class="board">
+    <div class="board__top">
+      <span class="whistle">●</span>
+      <h1>4 CORNERS</h1>
+      <button id="settingsBtn" class="icon-btn" aria-label="Settings">⚙</button>
+    </div>
+    <div class="board__meta">
+      <span id="planDate">— no plan loaded —</span>
+      <span id="planMode" class="pill"></span>
+    </div>
+  </header>
+
+  <main>
+    <!-- live state -->
+    <section id="liveCard" class="card live hidden">
+      <div class="live__label">NEXT CHECK-IN</div>
+      <div id="liveTime" class="live__time">--:--</div>
+      <div id="liveTask" class="live__task"></div>
+      <div id="liveCountdown" class="live__count"></div>
+    </section>
+
+    <!-- coach comeback bubble -->
+    <section id="coachReply" class="coach-bubble hidden">
+      <div class="coach-bubble__tag">COACH</div>
+      <div id="coachReplyText"></div>
+    </section>
+
+    <!-- respond -->
+    <section id="respondCard" class="card hidden">
+      <div class="card__title" id="respondPrompt">How's it going?</div>
+      <div class="btn-row">
+        <button class="status-btn on" data-status="on_track">On it</button>
+        <button class="status-btn mid" data-status="drifting">Drifting</button>
+        <button class="status-btn off" data-status="behind">Behind</button>
+      </div>
+      <textarea id="replyText" placeholder="say it straight (optional)…" rows="2"></textarea>
+      <button id="sendReply" class="primary">Report in</button>
+    </section>
+
+    <!-- voice picker -->
+    <section class="card">
+      <div class="card__title">VOICE</div>
+      <div id="voiceGrid" class="voice-grid"></div>
+    </section>
+
+    <!-- check-in list -->
+    <section class="card">
+      <div class="card__title">TODAY'S CHECK-INS</div>
+      <ul id="checkinList" class="checkins"></ul>
+    </section>
+
+    <!-- enable / test -->
+    <section class="card subtle">
+      <button id="enableBtn" class="primary">Enable check-ins on this phone</button>
+      <button id="testBtn" class="ghost">Send a test ping</button>
+      <p id="status" class="status-line"></p>
+    </section>
+
+    <!-- import plan -->
+    <section class="card subtle">
+      <div class="card__title">IMPORT PLAN</div>
+      <p class="hint">Paste the plan JSON Claude gives you in chat, then hit load.</p>
+      <textarea id="planJson" placeholder='{ "date": "2026-05-28", "mode": "diurnal", "checkins": [ ... ] }' rows="4"></textarea>
+      <button id="loadPlanBtn" class="primary">Load plan</button>
+    </section>
+  </main>
+
+  <!-- settings dialog -->
+  <dialog id="settingsDlg">
+    <form method="dialog" class="settings">
+      <h2>Settings</h2>
+      <label>Server URL
+        <input id="serverUrl" type="url" placeholder="https://your-coach.onrender.com" />
+      </label>
+      <label>App token
+        <input id="appToken" type="password" placeholder="the APP_TOKEN from your .env" />
+      </label>
+      <div class="settings__actions">
+        <button value="save" class="primary">Save</button>
+        <button value="cancel" class="ghost">Close</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+/* ============================================================
+   COACH — locker-room scoreboard aesthetic.
+   Palette is Bobby's RFG brand: navy / cream / gold.
+   Display: Anton (jersey block). Numbers: Sometype Mono.
+   Body: Hanken Grotesk.
+   ============================================================ */
+:root {
+  --navy: #1f3a5f;
+  --navy-deep: #14263d;
+  --navy-ink: #0d1a2b;
+  --cream: #f7f2e7;
+  --cream-dim: #cfc8b8;
+  --gold: #b8893d;
+  --gold-bright: #d9a64e;
+  --on: #6fae6f;
+  --mid: #d9a64e;
+  --off: #c8643f;
+  --line: rgba(247, 242, 231, 0.12);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background:
+    radial-gradient(120% 80% at 50% -10%, #20406a 0%, var(--navy-deep) 45%, var(--navy-ink) 100%);
+  color: var(--cream);
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  padding: 0 16px calc(40px + env(safe-area-inset-bottom));
+}
+
+/* subtle film grain for atmosphere */
+.grain {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+main { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; }
+
+/* ---- scoreboard header ---- */
+.board {
+  position: relative; z-index: 1;
+  max-width: 560px; margin: 0 auto;
+  padding: calc(18px + env(safe-area-inset-top)) 4px 14px;
+}
+.board__top { display: flex; align-items: center; gap: 12px; }
+.board__top h1 {
+  font-family: "Anton", sans-serif; font-weight: 400;
+  font-size: clamp(34px, 11vw, 52px); letter-spacing: 0.06em; margin: 0;
+  color: var(--cream); line-height: 1; flex: 1;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.35);
+}
+.whistle { color: var(--gold-bright); font-size: 12px; animation: pulse 2.4s infinite; }
+@keyframes pulse { 0%,100%{opacity:.35} 50%{opacity:1} }
+.board__meta {
+  display: flex; align-items: center; gap: 10px; margin-top: 6px;
+  font-size: 13px; color: var(--cream-dim); letter-spacing: 0.04em;
+}
+.pill {
+  border: 1px solid var(--gold); color: var(--gold-bright);
+  padding: 2px 9px; border-radius: 999px; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.12em;
+}
+.icon-btn {
+  background: none; border: none; color: var(--cream-dim);
+  font-size: 20px; cursor: pointer;
+}
+
+/* ---- cards ---- */
+.card {
+  background: rgba(13, 26, 43, 0.55);
+  border: 1px solid var(--line);
+  border-radius: 14px; padding: 18px; margin: 14px auto; max-width: 560px;
+  backdrop-filter: blur(6px);
+}
+.card.subtle { background: rgba(13, 26, 43, 0.3); }
+.card__title {
+  font-family: "Anton", sans-serif; font-size: 14px; letter-spacing: 0.16em;
+  color: var(--gold-bright); margin-bottom: 12px;
+}
+.hint { font-size: 12px; color: var(--cream-dim); margin: -4px 0 10px; }
+
+/* ---- live next-check-in ---- */
+.live {
+  border-color: rgba(184, 137, 61, 0.5);
+  background:
+    linear-gradient(180deg, rgba(184,137,61,0.12), rgba(13,26,43,0.5));
+  text-align: center;
+}
+.live__label {
+  font-family: "Anton", sans-serif; letter-spacing: 0.18em; font-size: 12px;
+  color: var(--gold-bright);
+}
+.live__time {
+  font-family: "Sometype Mono", monospace; font-weight: 700;
+  font-size: clamp(46px, 16vw, 72px); line-height: 1; color: var(--cream);
+  margin: 6px 0 4px;
+}
+.live__task { font-size: 15px; color: var(--cream); }
+.live__count { font-family: "Sometype Mono", monospace; font-size: 13px; color: var(--gold-bright); margin-top: 8px; }
+
+/* ---- coach bubble ---- */
+.coach-bubble {
+  background: linear-gradient(180deg, #243f63, var(--navy));
+  border: 1px solid var(--gold); border-left: 4px solid var(--gold);
+  border-radius: 12px; padding: 14px 16px; margin: 14px auto; max-width: 560px;
+  font-size: 16px; line-height: 1.45; box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  animation: slideIn 0.35s ease;
+}
+@keyframes slideIn { from { transform: translateY(8px); opacity: 0 } to { transform: none; opacity: 1 } }
+.coach-bubble__tag {
+  font-family: "Anton", sans-serif; font-size: 11px; letter-spacing: 0.2em;
+  color: var(--gold-bright); margin-bottom: 6px;
+}
+
+/* ---- respond ---- */
+.btn-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.status-btn {
+  flex: 1; padding: 14px 6px; border-radius: 10px; border: 1px solid var(--line);
+  font-family: "Anton", sans-serif; letter-spacing: 0.08em; font-size: 14px;
+  background: rgba(255,255,255,0.03); color: var(--cream); cursor: pointer;
+  transition: transform .08s, background .15s;
+}
+.status-btn:active { transform: scale(0.96); }
+.status-btn.on.sel, .status-btn.on:hover { background: rgba(111,174,111,0.25); border-color: var(--on); }
+.status-btn.mid.sel, .status-btn.mid:hover { background: rgba(217,166,78,0.25); border-color: var(--mid); }
+.status-btn.off.sel, .status-btn.off:hover { background: rgba(200,100,63,0.25); border-color: var(--off); }
+
+textarea, input {
+  width: 100%; background: rgba(0,0,0,0.25); color: var(--cream);
+  border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px;
+  font-family: inherit; font-size: 15px; resize: vertical; margin-bottom: 10px;
+}
+textarea:focus, input:focus { outline: none; border-color: var(--gold); }
+
+.primary {
+  width: 100%; padding: 14px; border: none; border-radius: 10px; cursor: pointer;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  color: var(--navy-ink); font-family: "Anton", sans-serif; letter-spacing: 0.08em;
+  font-size: 15px; transition: transform .08s, filter .15s;
+}
+.primary:active { transform: scale(0.98); }
+.primary:hover { filter: brightness(1.06); }
+.ghost {
+  width: 100%; padding: 12px; margin-top: 8px; border-radius: 10px; cursor: pointer;
+  background: none; border: 1px solid var(--line); color: var(--cream-dim);
+  font-family: inherit; font-size: 14px;
+}
+
+/* ---- check-in list ---- */
+.checkins { list-style: none; margin: 0; padding: 0; }
+.checkins li {
+  display: flex; align-items: center; gap: 12px; padding: 11px 0;
+  border-bottom: 1px solid var(--line); font-size: 14px;
+}
+.checkins li:last-child { border-bottom: none; }
+.ci-time { font-family: "Sometype Mono", monospace; color: var(--gold-bright); min-width: 64px; }
+.ci-task { flex: 1; color: var(--cream); }
+.ci-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--cream-dim); flex: none; }
+.ci-dot.fired { background: var(--gold-bright); }
+.ci-dot.on_track { background: var(--on); }
+.ci-dot.drifting { background: var(--mid); }
+.ci-dot.behind { background: var(--off); }
+
+.status-line { font-size: 12px; color: var(--cream-dim); margin: 12px 0 0; min-height: 1em; }
+.hidden { display: none !important; }
+
+/* ---- voice picker ---- */
+.voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.voice-btn {
+  text-align: left; padding: 12px; border-radius: 11px; cursor: pointer;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--line); color: var(--cream);
+  display: flex; flex-direction: column; gap: 4px; transition: transform .08s, border-color .15s, background .15s;
+}
+.voice-btn:active { transform: scale(0.97); }
+.voice-btn.sel { border-color: var(--gold); background: rgba(184,137,61,0.16); }
+.voice-name { font-family: "Anton", sans-serif; letter-spacing: 0.08em; font-size: 15px; color: var(--gold-bright); }
+.voice-btn.sel .voice-name { color: var(--cream); }
+.voice-blurb { font-size: 11.5px; color: var(--cream-dim); line-height: 1.3; }
+
+/* ---- settings dialog ---- */
+dialog {
+  border: 1px solid var(--gold); border-radius: 14px; padding: 0;
+  background: var(--navy-deep); color: var(--cream); width: min(92vw, 420px);
+}
+dialog::backdrop { background: rgba(5, 12, 22, 0.7); }
+.settings { padding: 22px; }
+.settings h2 { font-family: "Anton", sans-serif; letter-spacing: 0.1em; margin: 0 0 16px; }
+.settings label { display: block; font-size: 12px; color: var(--cream-dim); margin-bottom: 14px; }
+.settings__actions { display: flex; gap: 10px; }
+.settings__actions .primary, .settings__actions .ghost { margin-top: 4px; }
