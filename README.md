@@ -58,12 +58,9 @@ then **Enable check-ins** and **Send a test ping**.
 > on first wake. For exact timing, use a paid instance or a cheap always-on VPS.
 
 ## Using it day to day
-1. In Claude chat: *"plan my day, coach check-ins on."* Claude gathers context
-   and gives you a plan **plus a JSON block**.
-2. In the app: paste the JSON into **Import Plan → Load plan**.
-3. Go live your day. The app pings you at each check-in. Tap **On it / Drifting /
-   Behind** right from the notification, or open it and type a reply. The coach
-   answers — and that answer pushes back to you too.
+1. In the app: tap **NEW PLAN**, fill in date / mode / start time / a brief "what's on today," and tap **Draft my day**. Review the proposed check-ins, then **Schedule it**.
+2. (Optional / power user) You can still paste a plan JSON manually via the **Advanced** disclosure if you prefer to draft elsewhere.
+3. Pick your **Voice** (Coach / Operator / Stoic / Hype). Go live your day — pings hit your locked phone on schedule.
 
 ## Plan JSON schema
 ```json
