@@ -166,6 +166,24 @@ textarea:focus, input:focus { outline: none; border-color: var(--gold); }
 .status-line { font-size: 12px; color: var(--cream-dim); margin: 12px 0 0; min-height: 1em; }
 .hidden { display: none !important; }
 
+/* ---- in-app planner ---- */
+.plan-form { display: flex; flex-direction: column; gap: 10px; }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--cream-dim); letter-spacing: 0.04em; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.field input[type="date"], .field input[type="time"], .field select {
+  background: rgba(0,0,0,0.25); color: var(--cream);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  font-family: inherit; font-size: 15px;
+}
+.proposed { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.proposed__title {
+  font-family: "Anton", sans-serif; font-size: 12px; letter-spacing: 0.18em;
+  color: var(--gold-bright); margin-bottom: 8px;
+}
+#proposedSummary { font-size: 14px; color: var(--cream); margin-bottom: 10px; }
+.ci-intent { display: block; font-size: 11.5px; color: var(--cream-dim); margin-top: 2px; line-height: 1.35; }
+.btn-row .primary, .btn-row .ghost { width: auto; flex: 1; margin-top: 8px; }
+
 /* ---- voice picker ---- */
 .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .voice-btn {

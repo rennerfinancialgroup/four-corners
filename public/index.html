@@ -73,12 +73,44 @@
       <p id="status" class="status-line"></p>
     </section>
 
-    <!-- import plan -->
-    <section class="card subtle">
-      <div class="card__title">IMPORT PLAN</div>
-      <p class="hint">Paste the plan JSON Claude gives you in chat, then hit load.</p>
-      <textarea id="planJson" placeholder='{ "date": "2026-05-28", "mode": "diurnal", "checkins": [ ... ] }' rows="4"></textarea>
-      <button id="loadPlanBtn" class="primary">Load plan</button>
+    <!-- new plan (in-app) -->
+    <section class="card">
+      <div class="card__title">NEW PLAN</div>
+      <div class="plan-form">
+        <label class="field">
+          <span>Date</span>
+          <input id="planDateInput" type="date" />
+        </label>
+        <div class="field-row">
+          <label class="field">
+            <span>Mode</span>
+            <select id="planMode">
+              <option value="diurnal">Diurnal (day)</option>
+              <option value="nocturnal">Nocturnal (night)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Start time (optional)</span>
+            <input id="planStart" type="time" />
+          </label>
+        </div>
+        <label class="field">
+          <span>What's on today? (calendar, key tasks, mood)</span>
+          <textarea id="planContext" rows="4" placeholder="e.g. 10a Delores Ferrell review, 11:30 Eric, webinar prep tonight, low energy — feed me something light"></textarea>
+        </label>
+        <button id="draftBtn" class="primary">Draft my day</button>
+      </div>
+
+      <!-- proposed plan, shown after drafting -->
+      <div id="proposedPlan" class="proposed hidden">
+        <div class="proposed__title">DRAFT — review before scheduling</div>
+        <div id="proposedSummary"></div>
+        <ul id="proposedCheckins" class="checkins"></ul>
+        <div class="btn-row">
+          <button id="regenerateBtn" class="ghost">Regenerate</button>
+          <button id="scheduleBtn" class="primary">Schedule it</button>
+        </div>
+      </div>
     </section>
   </main>
 

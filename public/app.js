@@ -154,21 +154,68 @@ function handleDeepLink(url) {
   if (id) openRespond(id, status);
 }
 
-// ---- import plan ----
-async function loadPlan() {
-  let plan;
-  try { plan = JSON.parse($("planJson").value); }
-  catch { return setStatus("That's not valid JSON."); }
-  const r = await api("/plan", { method: "POST", body: JSON.stringify({ plan }) });
+// ---- in-app planner (no chat needed) ----
+let proposedPlan = null;
+function todayLocal() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+async function draftPlan() {
+  const body = {
+    date: $("planDateInput").value || todayLocal(),
+    mode: $("planMode").value,
+    startTime: $("planStart").value || null,
+    context: $("planContext").value.trim(),
+    tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  };
+  setStatus("Drafting…");
+  $("draftBtn").disabled = true;
+  try {
+    const r = await api("/plan/generate", { method: "POST", body: JSON.stringify(body) });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { setStatus("Draft failed: " + (d.error || r.status)); return; }
+    proposedPlan = d.plan;
+    renderProposed(proposedPlan);
+    setStatus("Draft ready — review below.");
+  } finally {
+    $("draftBtn").disabled = false;
+  }
+}
+function renderProposed(plan) {
+  $("proposedPlan").classList.remove("hidden");
+  $("proposedSummary").innerHTML =
+    `<strong>${escapeHtml(plan.date)}</strong> · <span class="pill">${escapeHtml(plan.mode || "")}</span> · ${plan.checkins?.length || 0} check-ins`;
+  const ul = $("proposedCheckins");
+  ul.innerHTML = "";
+  for (const c of (plan.checkins || [])) {
+    const li = document.createElement("li");
+    li.innerHTML =
+      `<span class="ci-time">${escapeHtml(c.time)}</span>
+       <span class="ci-task">${escapeHtml(c.task || "")}<span class="ci-intent">${escapeHtml(c.intent || "")}</span></span>`;
+    ul.appendChild(li);
+  }
+  $("proposedPlan").scrollIntoView({ behavior: "smooth" });
+}
+async function scheduleProposed() {
+  if (!proposedPlan) return setStatus("Nothing to schedule — draft first.");
+  const r = await api("/plan", { method: "POST", body: JSON.stringify({ plan: proposedPlan }) });
   const d = await r.json().catch(() => ({}));
-  setStatus(r.ok ? `✓ Loaded ${d.scheduled} check-ins.` : "Load failed: " + (d.error || r.status));
-  loadToday();
+  if (r.ok) {
+    setStatus(`✓ Scheduled ${d.scheduled} check-ins.`);
+    $("proposedPlan").classList.add("hidden");
+    proposedPlan = null;
+    loadToday();
+  } else {
+    setStatus("Schedule failed: " + (d.error || r.status));
+  }
 }
 
 // ---- wire up ----
 $("enableBtn").onclick = enablePush;
 $("testBtn").onclick = async () => { const r = await api("/test-push", { method: "POST" }); setStatus(r.ok ? "Test sent." : "Failed — check settings."); };
-$("loadPlanBtn").onclick = loadPlan;
+$("draftBtn").onclick = draftPlan;
+$("scheduleBtn").onclick = scheduleProposed;
+$("regenerateBtn").onclick = draftPlan;
 $("sendReply").onclick = sendReply;
 document.querySelectorAll(".status-btn").forEach((b) => b.onclick = () => {
   activeStatus = b.dataset.status;
@@ -189,6 +236,8 @@ $("settingsDlg").addEventListener("close", () => {
 (async function boot() {
   await registerSW();
   handleDeepLink(new URL(location.href));
+  const dateInput = $("planDateInput");
+  if (dateInput && !dateInput.value) dateInput.value = todayLocal();
   await loadVoices();
   await loadToday();
   setInterval(renderNext, 30000);
