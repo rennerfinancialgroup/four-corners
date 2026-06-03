@@ -5,6 +5,7 @@ import { store } from "./store.js";
 import { fireTimestamp, clockLabel } from "./time.js";
 import { sendToAll, pushConfigured } from "./push.js";
 import { writeCoachReply, listVoices, VOICES, voiceLabel } from "./coach.js";
+import { generatePlan } from "./planner.js";
 
 const router = express.Router();
 const TZ = process.env.TZ || "America/New_York";
@@ -46,6 +47,20 @@ router.post("/subscribe", (req, res) => {
   if (!subscription?.endpoint) return res.status(400).json({ error: "no subscription" });
   store.addSubscription(subscription);
   res.json({ ok: true });
+});
+
+// Generate a draft plan in-app — no chat round-trip needed.
+// The user reviews the returned JSON in the UI, then POSTs it to /plan to schedule.
+router.post("/plan/generate", async (req, res) => {
+  try {
+    const { date, mode, tz, startTime, context } = req.body || {};
+    if (!date) return res.status(400).json({ error: "date is required (YYYY-MM-DD)" });
+    const plan = await generatePlan({ date, mode, tz, startTime, context });
+    res.json({ ok: true, plan });
+  } catch (e) {
+    console.error("[plan/generate] failed:", e.message);
+    res.status(500).json({ error: e.message || "plan generation failed" });
+  }
 });
 
 // Import a plan (this is what you paste from the Claude chat).
