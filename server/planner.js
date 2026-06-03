@@ -70,15 +70,14 @@ Output strict JSON only.`;
     system: SYSTEM,
     messages: [
       { role: "user", content: userMsg },
-      // Prefill the assistant with "{" to force JSON output.
-      { role: "assistant", content: "{" },
     ],
   });
 
-  const raw = "{" + res.content.filter((b) => b.type === "text").map((b) => b.text).join("").trim();
-  // Strip any accidental trailing prose after the JSON object.
+  const raw = res.content.filter((b) => b.type === "text").map((b) => b.text).join("").trim();
+  // Extract the JSON object, ignoring any stray prose before or after it.
+  const firstBrace = raw.indexOf("{");
   const lastBrace = raw.lastIndexOf("}");
-  const jsonStr = lastBrace >= 0 ? raw.slice(0, lastBrace + 1) : raw;
+  const jsonStr = (firstBrace >= 0 && lastBrace > firstBrace) ? raw.slice(firstBrace, lastBrace + 1) : raw;
   try {
     return JSON.parse(jsonStr);
   } catch (e) {
